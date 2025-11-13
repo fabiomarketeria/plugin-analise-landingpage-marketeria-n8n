@@ -1,0 +1,425 @@
+{
+  "name": "Isca - Audtoria Técnica e de Conteúdo no site",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Análise Gratuita da Sua Landing Page",
+        "formDescription": "Descubra os 3 Maiores Problemas que Impedem sua Página de Converter",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Seu Nome",
+              "placeholder": "Como gostaria de ser chamado?",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Seu Melhor Email",
+              "placeholder": "seu@email.com",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "URL da Landing Page",
+              "placeholder": "https://www.seusite.com.br",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Qual seu maior desafio?",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Aumentar Leads"
+                  },
+                  {
+                    "option": "Reduzir o Ciclo de Vendas"
+                  },
+                  {
+                    "option": "Aumentar as Taxas de Conversão"
+                  }
+                ]
+              },
+              "multiselect": true,
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "7fbdb130-c0f6-4467-ae15-7b4eaaf3641b",
+      "name": "Formulário de Captura",
+      "type": "n8n-nodes-base.formTrigger",
+      "position": [
+        -912,
+        176
+      ],
+      "webhookId": "afe067a5-4878-4c9d-b746-691f77190f54",
+      "typeVersion": 2.2,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "url": "={{ $json['URL da Landing Page'] }}",
+        "options": {}
+      },
+      "id": "509993c3-5687-40b4-80dd-d27184a03d96",
+      "name": "Scrape Website",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -720,
+        112
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analise o conteúdo fornecido e identifique os 3 PROBLEMAS MAIS CRÍTICOS que estão prejudicando a conversão desta landing page. Seja direto e acionável.\n\n**FORMATO DE SAÍDA OBRIGATÓRIO:**\n\n## 🔍 Análise Rápida de Conteúdo\n\n### 🚨 Problemas Críticos Identificados:\n\n1. **Problema 1:** [Descrição concisa do problema mais grave]\n   - **Impacto:** [Como isso afeta as conversões]\n   - **Solução Rápida:** [Uma recomendação acionável]\n\n2. **Problema 2:** [Descrição concisa do segundo problema]\n   - **Impacto:** [Como isso afeta as conversões]\n   - **Solução Rápida:** [Uma recomendação acionável]\n\n3. **Problema 3:** [Descrição concisa do terceiro problema]\n   - **Impacto:** [Como isso afeta as conversões]\n   - **Solução Rápida:** [Uma recomendação acionável]\n\n**IMPORTANTE:** Seja específico e evite generalidades. Máximo 250 palavras no total.\n\nConteúdo para análise: {{ $json.data }}",
+        "options": {}
+      },
+      "id": "79e59b2d-08b2-405c-9405-baa8dd1f2587",
+      "name": "Content Audit - RESUMO",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -352,
+        384
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analise o código HTML fornecido e identifique os 3 PROBLEMAS TÉCNICOS MAIS CRÍTICOS que estão prejudicando o desempenho e SEO desta landing page.\n\n**FORMATO DE SAÍDA OBRIGATÓRIO:**\n\n## ⚙️ Análise Rápida Técnica\n\n### 🚨 Problemas Técnicos Críticos:\n\n1. **Problema 1:** [Descrição concisa do problema técnico mais grave]\n   - **Impacto:** [Como isso afeta performance/SEO]\n   - **Solução Rápida:** [Uma recomendação técnica acionável]\n\n2. **Problema 2:** [Descrição concisa do segundo problema técnico]\n   - **Impacto:** [Como isso afeta performance/SEO]\n   - **Solução Rápida:** [Uma recomendação técnica acionável]\n\n3. **Problema 3:** [Descrição concisa do terceiro problema técnico]\n   - **Impacto:** [Como isso afeta performance/SEO]\n   - **Solução Rápida:** [Uma recomendação técnica acionável]\n\n**IMPORTANTE:** Foque em problemas que impactam diretamente a conversão. Máximo 250 palavras no total.\n\nConteúdo para análise: {{ $json.data }}",
+        "options": {}
+      },
+      "id": "5365bbc2-7565-4823-a855-f9cb0a1318a7",
+      "name": "Technical Audit - RESUMO",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -352,
+        -16
+      ],
+      "typeVersion": 1.7
+    },
+    {
+      "parameters": {},
+      "id": "4e85546e-64d2-4efa-a81c-5b33c80026b2",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        160,
+        176
+      ],
+      "typeVersion": 3,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "output"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9fd04c49-4275-4e47-9a6f-b0de2c8ab106",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        352,
+        176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "markdownToHtml",
+        "markdown": "=Olá {{ $('Formulário de Captura').item.json['Seu Nome'] }}\n\n## 🎯 Sua Análise Rápida da Landing Page Está Pronta!\n\nObrigado por confiar na nossa expertise! Analisamos sua página ** {{ $('Formulário de Captura').item.json['URL da Landing Page'] }}** e identificamos os pontos mais críticos que estão impedindo suas conversões.\n\n---\n\n{{ $json.output[0] }}\n\n{{ $json.output[1] }}\n\n---\n\n## 💡 Esta é Apena a Ponta do Iceberg\n\n**Estes 6 problemas são apenas os mais evidentes!** Nossa auditoria completa normalmente revela:\n\n✅ **15-25+ pontos de otimização** específicos para seu negócio  \n✅ **Análise de concorrência** detalhada  \n✅ **Oportunidades de palavras-chave** não exploradas  \n✅ **Plano de ação passo a passo** para implementação  \n✅ **Análise de velocidade** e performance completa  \n\n## 🚀 Agende Sua Consultoria Estratégica Gratuita\n\n**Conversamos por 15-20 minutos e saia com:**\n\n✨ Estratégia clara para aumentar suas conversões  \n✨ Diagnóstico completo do seu funil de vendas  \n✨ Plano personalizado para seus objetivos  \n\n📅 **[Clique aqui para agendar sua call gratuita](https://calendar.app.google/w5mSfoHagkSTVk8Y7)**\n\n**Bônus Exclusivo:** Todos que agendarem recebem nosso **\"Guia dos 5 Erros Fatais em Landing Pages\"** gratuitamente!\n\n---\n\n*Enviado automaticamente por*  \n**Equipe Marketeria**  \n[www.marketeria.net.br](https://www.marketeria.net.br)  \nfabio@marketeria.net.br",
+        "options": {}
+      },
+      "id": "14db1510-6e0c-4c22-8b16-e4db78d7a1cf",
+      "name": "Markdown - Email Template",
+      "type": "n8n-nodes-base.markdown",
+      "position": [
+        560,
+        176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Formulário de Captura').item.json['Seu Melhor Email'] }}",
+        "subject": "=🎯 Sua Análise da {{ $('Formulário de Captura').item.json['URL da Landing Page'] }} - Marketeria ",
+        "message": "={{ $json.data }}",
+        "options": {
+          "ccList": "fabio@marketeria.net.br"
+        }
+      },
+      "id": "2822b8ed-cd2c-408a-9410-2193cb0f3a8d",
+      "name": "Gmail - Enviar Isca",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        784,
+        176
+      ],
+      "webhookId": "2979e4dc-1689-447e-8cd4-eb907b4eedf4",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "T6htzeqq0w82zCu1",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "opportunity",
+        "opportunityName": "={{ $json['Seu Nome'] }}",
+        "additionalFields": {
+          "email_from": "={{ $json['Seu Melhor Email'] }}",
+          "description": "={{ $json['URL da Landing Page'] }}\n\n{{ $json['Qual seu maior desafio?'] }}\n\n{{ $json.formMode }}\n\n{{ $workflow.name }}"
+        }
+      },
+      "id": "a131eaf6-c471-4aba-b12c-43187058ab98",
+      "name": "Odoo - Criar Lead",
+      "type": "n8n-nodes-base.odoo",
+      "position": [
+        -704,
+        336
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "odooApi": {
+          "id": "6CiLJyhY4S8OSFO5",
+          "name": "Odoo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "fabio@marketeria.net.br",
+        "subject": "=📥 NOVO LEAD - {{ $('Formulário de Captura').item.json['Seu Nome'] }} - Análise Landing Page",
+        "message": "=**Novo Lead Capturado - Otimizador de Conversão**\n\n**Nome:** {{ $('Formulário de Captura').item.json['Seu Nome'] }}\n**Email:** {{ $('Formulário de Captura').item.json['Seu Melhor Email'] }}\n**URL da Landing Page:** {{ $('Formulário de Captura').item.json['URL da Landing Page'] }}\n**Maior Desafio:** {{ $('Formulário de Captura').item.json['Qual seu maior desafio?'] }}\n\n**Lead criado automaticamente no Odoo no pipeline de vendas.**\n\n---\n*Enviado automaticamente pelo sistema marketerIA*",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "7ed3a96a-3886-4ca0-97af-998d2f4cb383",
+      "name": "Gmail - Notificação Marketeria",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        -800,
+        560
+      ],
+      "typeVersion": 2.1,
+      "webhookId": "d934d876-c324-4adf-be20-609ad136fab9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "T6htzeqq0w82zCu1",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        256
+      ],
+      "id": "058c37ed-1ac4-4cbb-a3ea-34522d6ce930",
+      "name": "DeepSeek Chat Model",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "mx5E80vtgkn99Q7o",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        592
+      ],
+      "id": "99a69701-3241-4f31-ac3c-7c71b55a77db",
+      "name": "DeepSeek Chat Model1",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "mx5E80vtgkn99Q7o",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        736
+      ],
+      "id": "5e75f0fd-affb-455b-8e0e-e4be05e28c79",
+      "name": "Insert row"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Formulário de Captura": {
+      "main": [
+        [
+          {
+            "node": "Scrape Website",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Odoo - Criar Lead",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail - Notificação Marketeria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Website": {
+      "main": [
+        [
+          {
+            "node": "Content Audit - RESUMO",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Technical Audit - RESUMO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Audit - RESUMO": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Technical Audit - RESUMO": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Markdown - Email Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown - Email Template": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Enviar Isca",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Technical Audit - RESUMO",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content Audit - RESUMO",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": 300,
+    "availableInMCP": false,
+    "saveDataSuccessExecution": "all"
+  },
+  "versionId": "9c99535a-95f7-4b26-97f9-93b196489e7f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "16d45997d113a05d5d1ba487107b73b084e04da92b1021eb5dcb2f4d14ec30da"
+  },
+  "id": "q5nRxM7iTv8W3Mxy",
+  "tags": []
+}
